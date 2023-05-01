@@ -14,7 +14,7 @@ const app = express();
 const Joi = require("joi");
 
 
-const expireTime = 24 * 60 * 60 * 1000; //expires after 1 day  (hours * minutes * seconds * millis)
+const expireTime = 1 * 60 * 60 * 1000; //expires after 1 hour  (hours * minutes * seconds * millis)
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -58,7 +58,7 @@ app.get('/', (req,res) => {
 
 app.get('/memebers', (req,res) => {
   if (!req.session.authenticated) {
-      res.redirect('/login');
+      res.redirect('/');
       return;
   }
 
