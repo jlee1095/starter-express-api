@@ -151,6 +151,19 @@ app.get('/login', (req,res) => {
     res.send(html);
 });
 
+app.get('/login-wrong-password', (req,res) => {
+    var html = `
+    <h1>Log in!</h1>
+    <p>Ayo password wrong</p>
+    <form action='/loggingin' method='post'>
+    <input name='username' type='text' placeholder='broname'>
+    <input name='password' type='password' placeholder='password'>
+    <button>Submit</button>
+    </form>
+    `;
+    res.send(html);
+});
+
 app.post('/submitUser', async (req,res) => {
     var username = req.body.username;
     var password = req.body.password;
@@ -208,7 +221,7 @@ app.post('/loggingin', async (req,res) => {
 	}
 	else {
 		console.log("wrong password");
-		res.redirect("/login");
+		res.redirect("/login-wrong-password");
 		return;
 	}
 });
