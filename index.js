@@ -56,7 +56,7 @@ app.get('/', (req,res) => {
     );
 });
 
-app.get('/memebers', (req,res) => {
+app.get('/memebers/', (req,res) => {
   if (!req.session.authenticated) {
       res.redirect('/');
       return;
@@ -177,7 +177,7 @@ app.post('/submitUser/', async (req,res) => {
 	const validationResult = schema.validate({username, password});
 	if (validationResult.error != null) {
 	   console.log(validationResult.error);
-	   res.redirect("/createUser");
+	   res.redirect("/createUser/");
 	   return;
    }
 
