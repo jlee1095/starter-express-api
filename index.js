@@ -49,14 +49,14 @@ app.use(session({
 
 app.get('/', (req,res) => {
     res.send(`<h1>Howdy Neighbour</h1>
-    <a href='/createUser/'>SIGN UP TO BE A BRO</a>
-    <a href='/login/'>Already a bro? Login!</a>
-    <a href="/memebers/">Members Zones</a>
-    <a href="/logout/">Logout?</a>`
+    <a href='/createUser'>SIGN UP TO BE A BRO</a>
+    <a href='/login'>Already a bro? Login!</a>
+    <a href="/memebers">Members Zones</a>
+    <a href="/logout">Logout?</a>`
     );
 });
 
-app.get('/memebers/', (req,res) => {
+app.get('/memebers', (req,res) => {
   if (!req.session.authenticated) {
       res.redirect('/');
       return;
@@ -66,10 +66,10 @@ app.get('/memebers/', (req,res) => {
   const randomMeme = memes[Math.floor(Math.random() * memes.length)];
   res.send(`<h1>For Members Only</h1>
   Meme for the Bro: <img src='/${randomMeme}' style='width:250px;'>
-  <br><a href="/logout/">Logout?</a>`);
+  <br><a href="/logout">Logout?</a>`);
 });
 
-app.get('/nosql-injection/', async (req,res) => {
+app.get('/nosql-injection', async (req,res) => {
 	var username = req.query.user;
 
 	if (!username) {
@@ -94,13 +94,13 @@ app.get('/nosql-injection/', async (req,res) => {
     res.send(`<h1>Hello ${username}</h1>`);
 });
 
-app.get('/about/', (req,res) => {
+app.get('/about', (req,res) => {
     var color = req.query.color;
 
     res.send("<h1 style='color:"+color+";'>Jason Lee</h1>");
 });
 
-app.get('/contact/', (req,res) => {
+app.get('/contact', (req,res) => {
     var missingEmail = req.query.missing;
     var html = `
         Your E-mail Address: 
@@ -115,7 +115,7 @@ app.get('/contact/', (req,res) => {
     res.send(html);
 });
 
-app.post('/submitEmail/', (req,res) => {
+app.post('/submitEmail', (req,res) => {
     var email = req.body.email;
     if (!email) {
         res.redirect('/contact?missing=1');
@@ -126,7 +126,7 @@ app.post('/submitEmail/', (req,res) => {
 });
 
 
-app.get('/createUser/', (req,res) => {
+app.get('/createUser', (req,res) => {
     var html = `
     <h1>Ayo Let's be a BRO</h1>
     <form action='/submitUser' method='post'>
@@ -139,7 +139,7 @@ app.get('/createUser/', (req,res) => {
 });
 
 
-app.get('/login/', (req,res) => {
+app.get('/login', (req,res) => {
     var html = `
     <h1>Log in!</h1>
     <form action='/loggingin' method='post'>
@@ -151,7 +151,7 @@ app.get('/login/', (req,res) => {
     res.send(html);
 });
 
-app.get('/login-wrong-password/', (req,res) => {
+app.get('/login-wrong-password', (req,res) => {
     var html = `
     <h1>Log in!</h1>
     <p>Ayo password wrong</p>
@@ -164,7 +164,7 @@ app.get('/login-wrong-password/', (req,res) => {
     res.send(html);
 });
 
-app.post('/submitUser/', async (req,res) => {
+app.post('/submitUser', async (req,res) => {
     var username = req.body.username;
     var password = req.body.password;
 
@@ -177,7 +177,7 @@ app.post('/submitUser/', async (req,res) => {
 	const validationResult = schema.validate({username, password});
 	if (validationResult.error != null) {
 	   console.log(validationResult.error);
-	   res.redirect("/createUser/");
+	   res.redirect("/createUser");
 	   return;
    }
 
@@ -186,11 +186,11 @@ app.post('/submitUser/', async (req,res) => {
 	await userCollection.insertOne({username: username, password: hashedPassword});
 	console.log("User has been inserted");
 
-    var html = `Welcome to the bro army<br><a href="/memebers/">Members Zones</a>`;
+    var html = `Welcome to the bro army<br><a href="/memebers">Members Zones</a>`;
     res.send(html);
 });
 
-app.post('/loggingin/', async (req,res) => {
+app.post('/loggingin', async (req,res) => {
     var username = req.body.username;
     var password = req.body.password;
 
@@ -216,17 +216,17 @@ app.post('/loggingin/', async (req,res) => {
 		req.session.username = username;
 		req.session.cookie.maxAge = expireTime;
 
-		res.redirect('/loggedIn/');
+		res.redirect('/loggedIn');
 		return;
 	}
 	else {
 		console.log("wrong password");
-		res.redirect("/login-wrong-password/");
+		res.redirect("/login-wrong-password");
 		return;
 	}
 });
 
-app.get('/loggedin/', (req,res) => {
+app.get('/loggedin', (req,res) => {
     if (!req.session.authenticated) {
         res.redirect('/login');
     }
@@ -236,7 +236,7 @@ app.get('/loggedin/', (req,res) => {
     res.send(html);
 });
 
-app.get('/logout/', (req,res) => {
+app.get('/logout', (req,res) => {
 	req.session.destroy();
     var html = `
     Logged out! See you again!
@@ -244,7 +244,7 @@ app.get('/logout/', (req,res) => {
     res.send(html);
 });
 
-app.use(express.static(__dirname + "/public/"));
+app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req,res) => {
 	res.status(404);
