@@ -51,7 +51,8 @@ app.get('/', (req,res) => {
     res.send(`<h1>Howdy Neighbour</h1>
     <a href='/createUser'>SIGN UP TO BE A BRO</a>
     <a href='/login'>Already a bro? Login!</a>
-    <a href="/memebers">Members Zones</a>`
+    <a href="/memebers">Members Zones</a>
+    <a href="/logout">Logout?</a>`
     );
 });
 
@@ -64,7 +65,8 @@ app.get('/memebers', (req,res) => {
   const memes = ['meme1.gif', 'meme2.gif', 'meme3.gif'];
   const randomMeme = memes[Math.floor(Math.random() * memes.length)];
   res.send(`<h1>For Members Only</h1>
-  Meme for the Bro: <img src='/${randomMeme}' style='width:250px;'>`);
+  Meme for the Bro: <img src='/${randomMeme}' style='width:250px;'>
+  <br><a href="/logout">Logout?</a>`);
 });
 
 app.get('/nosql-injection', async (req,res) => {
@@ -217,14 +219,14 @@ app.get('/loggedin', (req,res) => {
     }
     var html = `
     You have logged in my friend!<br><a href="/memebers">Members Zones</a>
-    `;
+    <a href="/logout">Logout?</a>`;
     res.send(html);
 });
 
 app.get('/logout', (req,res) => {
 	req.session.destroy();
     var html = `
-    Logged out!
+    Logged out! See you again!
     `;
     res.send(html);
 });
