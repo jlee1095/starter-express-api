@@ -1,39 +1,3 @@
-// const express = require('express')
-// const app = express()
-// app.all('/', (req, res) => {
-//     console.log("Just got a request!")
-//     res.send('Hello World!' + JSON.stringify(process.env))
-// })
-// app.listen(process.env.PORT || 3000)
-
-
-// const { MongoClient, ServerApiVersion } = require('mongodb');
-// const uri = "mongodb+srv://jlee1095:<password>@webdev2.zru36kx.mongodb.net/?retryWrites=true&w=majority";
-
-// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-// const client = new MongoClient(uri, {
-//   serverApi: {
-//     version: ServerApiVersion.v1,
-//     strict: true,
-//     deprecationErrors: true,
-//   }
-// });
-
-// async function run() {
-//   try {
-//     // Connect the client to the server	(optional starting in v4.7)
-//     await client.connect();
-//     // Send a ping to confirm a successful connection
-//     await client.db("admin").command({ ping: 1 });
-//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
-//   } finally {
-//     // Ensures that the client will close when you finish/error
-//     await client.close();
-//   }
-// }
-// run().catch(console.dir);
-
-
 require("./utils.js");
 
 require('dotenv').config();
@@ -84,7 +48,21 @@ app.use(session({
 ));
 
 app.get('/', (req,res) => {
-    res.send("<h1>Hello World!</h1>");
+    res.send("<h1>Howdy Neighbour</h1>");
+    res.send("<a href='/createUser'>SIGN UP TO BE A BRO</a>");
+    res.send("<a href='/login'>Already a bro? Login!</a>");
+    res.send("<a href='/memebers'>Members Zones</a>")
+});
+
+app.get('/memebers', (req,res) => {
+  if (!req.session.authenticated) {
+      res.redirect('/login');
+  }
+  res.send("<h1>For Members Only</h1>");
+
+  const memes = ['/meme1.gif', '/meme2.gif', '/meme3.gif'];
+  const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+  res.send(`Meme for the Bro: <img src='/${randomMeme}' style='width:250px;'>`);
 });
 
 app.get('/nosql-injection', async (req,res) => {
@@ -98,12 +76,7 @@ app.get('/nosql-injection', async (req,res) => {
 
 	const schema = Joi.string().max(20).required();
 	const validationResult = schema.validate(username);
-
-	//If we didn't use Joi to validate and check for a valid URL parameter below
-	// we could run our userCollection.find and it would be possible to attack.
-	// A URL parameter of user[$ne]=name would get executed as a MongoDB command
-	// and may result in revealing information about all users or a successful
-	// login without knowing the correct password.
+    
 	if (validationResult.error != null) {  
 	   console.log(validationResult.error);
 	   res.send("<h1 style='color:darkred;'>A NoSQL injection attack was detected!!</h1>");
@@ -120,13 +93,13 @@ app.get('/nosql-injection', async (req,res) => {
 app.get('/about', (req,res) => {
     var color = req.query.color;
 
-    res.send("<h1 style='color:"+color+";'>Patrick Guichon</h1>");
+    res.send("<h1 style='color:"+color+";'>Jason Lee</h1>");
 });
 
 app.get('/contact', (req,res) => {
     var missingEmail = req.query.missing;
     var html = `
-        email address:
+        Your E-mail Address: 
         <form action='/submitEmail' method='post'>
             <input name='email' type='text' placeholder='email'>
             <button>Submit</button>
@@ -144,18 +117,18 @@ app.post('/submitEmail', (req,res) => {
         res.redirect('/contact?missing=1');
     }
     else {
-        res.send("Thanks for subscribing with your email: "+email);
+        res.send("You have subscribed with the email: "+email);
     }
 });
 
 
 app.get('/createUser', (req,res) => {
     var html = `
-    create user
+    <h1>Ayo Let's be a BRO</h1>
     <form action='/submitUser' method='post'>
-    <input name='username' type='text' placeholder='username'>
-    <input name='password' type='password' placeholder='password'>
-    <button>Submit</button>
+    <input name='Broname' type='text' placeholder='broname'>
+    <input name='Password' type='password' placeholder='password'>
+    <button>Send it!</button>
     </form>
     `;
     res.send(html);
@@ -164,10 +137,10 @@ app.get('/createUser', (req,res) => {
 
 app.get('/login', (req,res) => {
     var html = `
-    log in
+    <h1>Log in!</h1>
     <form action='/loggingin' method='post'>
-    <input name='username' type='text' placeholder='username'>
-    <input name='password' type='password' placeholder='password'>
+    <input name='Username' type='text' placeholder='username'>
+    <input name='Password' type='password' placeholder='password'>
     <button>Submit</button>
     </form>
     `;
@@ -194,7 +167,7 @@ app.post('/submitUser', async (req,res) => {
     var hashedPassword = await bcrypt.hash(password, saltRounds);
 	
 	await userCollection.insertOne({username: username, password: hashedPassword});
-	console.log("Inserted user");
+	console.log("User has been inserted");
 
     var html = "successfully created user";
     res.send(html);
@@ -216,12 +189,12 @@ app.post('/loggingin', async (req,res) => {
 
 	console.log(result);
 	if (result.length != 1) {
-		console.log("user not found");
+		console.log("User is not found...");
 		res.redirect("/login");
 		return;
 	}
 	if (await bcrypt.compare(password, result[0].password)) {
-		console.log("correct password");
+		console.log("right password");
 		req.session.authenticated = true;
 		req.session.username = username;
 		req.session.cookie.maxAge = expireTime;
@@ -230,7 +203,7 @@ app.post('/loggingin', async (req,res) => {
 		return;
 	}
 	else {
-		console.log("incorrect password");
+		console.log("wrong password");
 		res.redirect("/login");
 		return;
 	}
@@ -241,7 +214,7 @@ app.get('/loggedin', (req,res) => {
         res.redirect('/login');
     }
     var html = `
-    You are logged in!
+    You have logged in my friend!
     `;
     res.send(html);
 });
@@ -249,33 +222,17 @@ app.get('/loggedin', (req,res) => {
 app.get('/logout', (req,res) => {
 	req.session.destroy();
     var html = `
-    You are logged out.
+    Logged out!
     `;
     res.send(html);
 });
-
-
-app.get('/cat/:id', (req,res) => {
-
-    var cat = req.params.id;
-
-    if (cat == 1) {
-        res.send("Fluffy: <img src='/fluffy.gif' style='width:250px;'>");
-    }
-    else if (cat == 2) {
-        res.send("Socks: <img src='/socks.gif' style='width:250px;'>");
-    }
-    else {
-        res.send("Invalid cat id: "+cat);
-    }
-});
-
 
 app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req,res) => {
 	res.status(404);
-	res.send("Page not found - 404");
+	res.send("Page isn't here! It's a 404 Error");
+    res.send("Sad boi <img src='/sad.gif' style='width:250px;'>");
 })
 
 app.listen(port, () => {
