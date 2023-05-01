@@ -128,8 +128,8 @@ app.get('/createUser', (req,res) => {
     var html = `
     <h1>Ayo Let's be a BRO</h1>
     <form action='/submitUser' method='post'>
-    <input name='Broname' type='text' placeholder='broname'>
-    <input name='Password' type='password' placeholder='password'>
+    <input name='username' type='text' placeholder='Broname'>
+    <input name='password' type='password' placeholder='password'>
     <button>Send it!</button>
     </form>
     `;
@@ -141,8 +141,8 @@ app.get('/login', (req,res) => {
     var html = `
     <h1>Log in!</h1>
     <form action='/loggingin' method='post'>
-    <input name='Username' type='text' placeholder='username'>
-    <input name='Password' type='password' placeholder='password'>
+    <input name='username' type='text' placeholder='broname'>
+    <input name='password' type='password' placeholder='password'>
     <button>Submit</button>
     </form>
     `;
