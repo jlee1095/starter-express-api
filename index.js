@@ -185,6 +185,8 @@ app.post('/submitUser', async (req,res) => {
 	
 	await userCollection.insertOne({username: username, password: hashedPassword});
 	console.log("User has been inserted");
+    req.session.authenticated = true;
+		req.session.username = username;
 
     var html = `Welcome to the bro army<br><a href="/memebers">Members Zones</a>`;
     res.send(html);
