@@ -48,21 +48,23 @@ app.use(session({
 ));
 
 app.get('/', (req,res) => {
-    res.send("<h1>Howdy Neighbour</h1>");
-    res.send("<a href='/createUser'>SIGN UP TO BE A BRO</a>");
-    res.send("<a href='/login'>Already a bro? Login!</a>");
-    res.send("<a href='/memebers'>Members Zones</a>")
+    res.send(`<h1>Howdy Neighbour</h1>
+    <a href='/createUser'>SIGN UP TO BE A BRO</a>
+    <a href='/login'>Already a bro? Login!</a>
+    <a href="/memebers">Members Zones</a>`
+    );
 });
 
 app.get('/memebers', (req,res) => {
   if (!req.session.authenticated) {
       res.redirect('/login');
+      return;
   }
-  res.send("<h1>For Members Only</h1>");
 
   const memes = ['/meme1.gif', '/meme2.gif', '/meme3.gif'];
   const randomMeme = memes[Math.floor(Math.random() * memes.length)];
-  res.send(`Meme for the Bro: <img src='/${randomMeme}' style='width:250px;'>`);
+  res.send(`<h1>For Members Only</h1>
+  Meme for the Bro: <img src='/${randomMeme}' style='width:250px;'>`);
 });
 
 app.get('/nosql-injection', async (req,res) => {
