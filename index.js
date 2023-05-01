@@ -61,7 +61,7 @@ app.get('/memebers', (req,res) => {
       return;
   }
 
-  const memes = ['/meme1.gif', '/meme2.gif', '/meme3.gif'];
+  const memes = ['meme1.gif', 'meme2.gif', 'meme3.gif'];
   const randomMeme = memes[Math.floor(Math.random() * memes.length)];
   res.send(`<h1>For Members Only</h1>
   Meme for the Bro: <img src='/${randomMeme}' style='width:250px;'>`);
@@ -171,7 +171,7 @@ app.post('/submitUser', async (req,res) => {
 	await userCollection.insertOne({username: username, password: hashedPassword});
 	console.log("User has been inserted");
 
-    var html = "successfully created user";
+    var html = `Welcome to the bro army<br><a href="/memebers">Members Zones</a>`;
     res.send(html);
 });
 
@@ -216,7 +216,7 @@ app.get('/loggedin', (req,res) => {
         res.redirect('/login');
     }
     var html = `
-    You have logged in my friend!
+    You have logged in my friend!<br><a href="/memebers">Members Zones</a>
     `;
     res.send(html);
 });
